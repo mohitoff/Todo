@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .js-title  {
+        font-size: x-large;
+      }
+      .js-add-button {
+        border: none;
+        background-color: green;
+        color: white;
+        padding: 10px 15px;
+        font-weight: bold;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+      .todo-grid, .todo-input-grid {
+        display: grid;
+        grid-template-columns: 200px 150px 100px;
+        column-gap: 10px;
+        row-gap: 10px;
+      }
+      .todo-input-grid {
+        margin-bottom: 10px;
+      }
+      .delete-todo-button {
+        border: none;
+        background-color: red;
+        color: white;
+        padding: 10px 15px;
+        font-weight: bold;
+        border-radius: 20px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="js-title">Todo List</p>
+    <div class="todo-input-grid">
+      <input 
+        placeholder="Todo name"
+        class="js-input"
+        onkeydown="if (event.key === 'Enter') { add(); }">
+      <input type="date" class="js-update-time">
+      <button class="js-add-button" onclick="add();">Add</button>
+    </div>
+    <div class="js-display todo-grid"></div>
+    
+    <script>
+      // Initialize arrays from localStorage or empty if not found
+      const arr1 = JSON.parse(localStorage.getItem('todo')) || [];
+      const arr2 = JSON.parse(localStorage.getItem('date')) || [];
+
+      // Display existing todos on page load
+      dis();
+
+      function add() {
+        const val1 = document.querySelector(".js-input").value;
+        const val2 = document.querySelector(".js-update-time").value;
+
+        if (val1 && val2) {  // Check if both fields are filled
+          arr1.push(val1);
+          arr2.push(val2);
+
+          // Update localStorage
+          localStorage.setItem('todo', JSON.stringify(arr1));
+          localStorage.setItem('date', JSON.stringify(arr2));
+
+          dis();
+          // Clear the input fields
+          document.querySelector(".js-input").value = '';
+          document.querySelector(".js-update-time").value = '';
+        }
+      }
+
+      function dis() {
+        let plus1 = '';
+        for (let i = 0; i < arr1.length; i++) {
+          const item1 = arr1[i];
+          const item2 = arr2[i];
+          const paste1 = `
+            <div>${item1}</div>
+            <div>${item2}</div>
+            <button onclick="arr1.splice(${i},1); arr2.splice(${i},1); dis();" class="delete-todo-button">Delete</button>
+          `;
+          plus1 += paste1;
+        }
+        document.querySelector('.js-display').innerHTML = plus1;
+        // we are storing value in arrays in localStorage , because if arrays are filled with values , then everyTime we reload the page all those saved values process and give us the content
+        
+        // Update localStorage with any changes
+        localStorage.setItem('todo', JSON.stringify(arr1));
+        localStorage.setItem('date', JSON.stringify(arr2));
+      }
+    </script>
+  </body>
+</html>
